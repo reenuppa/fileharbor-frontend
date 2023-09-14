@@ -15,6 +15,7 @@ import {
 import Contact from "./homepage/Contact";
 import Main from "./homepage/Main";
 import Footer from "./homepage/Footer";
+
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 const Page = () => {
   const font = "'Poppins', sans-serif";
@@ -65,6 +66,7 @@ const Page = () => {
       </Box>
       {/* Your page content goes here */}
       <br></br>
+      
       <Main></Main>
       <Contact></Contact> 
       <Footer></Footer> 

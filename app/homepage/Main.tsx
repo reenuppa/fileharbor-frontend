@@ -86,7 +86,6 @@ export default function Main() {
             size="large"
             style={{ margin: '10px' }}
           >
-            
             Sign Up
           </Button>
           </Link>
