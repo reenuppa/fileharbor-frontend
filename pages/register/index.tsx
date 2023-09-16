@@ -1,45 +1,32 @@
 import React, { useState } from 'react';
 import {
-    Grid,
-    Link,
+  Grid,
+  Link,
   Container,
   Typography,
   TextField,
   Button,
   makeStyles,
   ThemeProvider,
+  Alert,
+  AlertTitle,
 } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import Copyright from "@/components/Copyright";
 import axios from 'axios';
+import { useRouter } from 'next/router';
 
 const theme = createTheme();
 
-// const useStyles = makeStyles((theme) => ({
-//   container: {
-//     marginTop: theme.spacing(8),
-//     display: 'flex',
-//     flexDirection: 'column',
-//     alignItems: 'center',
-//   },
-//   form: {
-//     width: '100%',
-//     maxWidth: '400px',
-//     marginTop: theme.spacing(1),
-//   },
-//   submit: {
-//     margin: theme.spacing(3, 0, 2),
-//   },
-// }));
-
 const SignUp: React.FC = () => {
-  
+  const router = useRouter();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     email: '',
     password: '',
   });
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,19 +36,19 @@ const SignUp: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // TODO: Implement user registration logic with PostgreSQL on the backend here
-    // You should send a POST request to your backend API with formData
-    // Example: axios.post('/api/register', formData);
-
     try {
-      // Replace the following with your backend registration logic
-      const response = await axios.post('/api/register', formData); // Replace with your server's API endpoint
+      const response = await axios.post('/api/register', formData);
       const data = response.data;
 
-      // Handle registration success
       console.log('Registration successful:', data);
+
+      // Show the success notification and redirect
+      setShowSuccess(true);
+
+      setTimeout(() => {
+        router.push('/fileshare');
+      }, 2000);
     } catch (error) {
-      // Handle registration error
       console.error('Registration failed:', error);
     }
   };
@@ -71,7 +58,7 @@ const SignUp: React.FC = () => {
       <Container component="main" maxWidth="xs"  sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h4">Sign Up</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%', marginTop: 1 }}>
-          <TextField
+        <TextField
             variant="outlined"
             margin="normal"
             fullWidth
@@ -115,8 +102,7 @@ const SignUp: React.FC = () => {
             value={formData.password}
             onChange={handleInputChange}
             required
-          />
-          <Button
+          /><Button
             type="submit"
             fullWidth
             variant="contained"
@@ -126,17 +112,21 @@ const SignUp: React.FC = () => {
             Sign Up
           </Button>
           <Grid container justifyContent="flex-end">
-              <Grid item>
-                <Link href="/signin" variant="body2">
-                  Already have an account? Sign in
-                </Link>
-              </Grid>
+            <Grid item>
+              <Link href="/signin" variant="body2">
+                Already have an account? Sign in
+              </Link>
             </Grid>
+          </Grid>
         </form>
+        {showSuccess && ( // Conditionally render the success alert
+          <Alert severity="success" sx={{ width: '100%', marginTop: 2 }}>
+            <AlertTitle>Success</AlertTitle>
+            Account successfully created! Redirecting to FileShare...
+          </Alert>
+        )}
         <Copyright sx={{ mt: 5 }} />
-        
       </Container>
-        
     </ThemeProvider>
   );
 };

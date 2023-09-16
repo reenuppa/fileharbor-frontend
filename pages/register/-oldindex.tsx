@@ -24,7 +24,6 @@ import {
   User,
 } from "../../utils/auth";
 import Copyright from "@/components/Copyright";
-import GoogleSignUpButton from "@/components/GoogleSignup";
 import Loader from "@/components/Loaders";
 const api = require( "@/apiCalls");
 
