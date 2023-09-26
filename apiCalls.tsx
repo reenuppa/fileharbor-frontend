@@ -3,13 +3,15 @@ import axios from "axios";
 import { User } from "./utils/auth";
 import Cookies from "js-cookie";
 
-const getApiUrl=() =>process.env.API_BACKEND_URL;
+const getApiUrl=() =>process.env.NEXT_PUBLIC_BACKEND_URL;
 const API_URL = getApiUrl();
   interface UserData {
     // Define the structure of the user data you expect
     id: number;
-    username: string;
+    firstname: string;
+    lastname: string;
     email: string;
+    password:string;
     // Add other properties as needed
   }
   
@@ -17,7 +19,7 @@ const API_URL = getApiUrl();
   const getUser = async (token: string): Promise<UserData | null> => {
     try {
       // Make a GET request to your API endpoint with the token in the headers
-      const response = await axios.get<UserData>(`${API_URL}/user`, {
+      const response = await axios.get<UserData>(`${API_URL}/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

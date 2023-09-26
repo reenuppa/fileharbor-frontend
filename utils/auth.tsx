@@ -5,7 +5,8 @@ import { useRouter, NextRouter } from 'next/router';
 // Define the User interface with your required properties
 export interface User {
   id: number;
-  name: string;
+  firstname: string;
+  lastname:string;
   email: string;
   token: string; // Adjust the type as needed
 }
@@ -72,7 +73,7 @@ export const checkUserAuthenticated = async (router: NextRouter) => {
         "Authorization": `Bearer ${token}`
       };
 
-      const response = await axios.get(`${BACKEND_URL}/getuser`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_BACKEND_URL}/getuser`, {
         headers: headersWithToken
       });
 

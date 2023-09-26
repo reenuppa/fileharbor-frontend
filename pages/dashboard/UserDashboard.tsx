@@ -3,7 +3,6 @@ import Link from "next/link";
 import {
   AppBar,
   Box,
-  Button,
   Divider,
   Drawer,
   IconButton,
@@ -25,11 +24,14 @@ import DriveFolderUploadIcon from '@mui/icons-material/DriveFolderUpload';
 import SharedIcon from "@mui/icons-material/People";
 import ClockIcon from "@mui/icons-material/AccessTime";
 import BinIcon from "@mui/icons-material/Delete";
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import FileUpload from '@/pages/fileupload/index';
 
 interface UserDashboardProps {
   onHomeClick: () => void;
   onSettingsClick: () => void;
   onLogout: () => void;
+  userFirstName: string;
 }
 
 const font = "'Poppins', sans-serif";
@@ -43,6 +45,8 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
   onHomeClick,
   onSettingsClick,
   onLogout,
+  userFirstName,
+
 }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter(); // Use the useRouter hook
@@ -51,7 +55,11 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
     // Redirect to the '/fileupload/index' page
     router.push('/fileupload');
   };
-
+  const handleLogout = () => {
+    // Call the onLogout function when the logout button is clicked
+    onLogout();
+    router.push('/');
+  };
   const toggleDrawer = (open: boolean) => (
     event: React.KeyboardEvent | React.MouseEvent
   ) => {
@@ -109,6 +117,12 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
           </ListItemIcon>
           <ListItemText primary="Storage (50% full)" />
         </ListItem>
+        <ListItem button onClick={handleLogout}>
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
       </List>
     </div>
   );
@@ -138,7 +152,7 @@ const UserDashboard: React.FC<UserDashboardProps> = ({
             </IconButton>
             <AccountCircleIcon />
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-              FileHarbor
+            {userFirstName}'s FileHarbor
             </Typography>
             <Link style={{ textDecoration: "none", color: "white" }} href={"/home"}>
               <Typography>Home</Typography>

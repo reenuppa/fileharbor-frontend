@@ -1,32 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Grid,
-  Link,
-  Container,
-  Typography,
-  TextField,
-  Button,
-  makeStyles,
-  ThemeProvider,
-  Alert,
-  AlertTitle,
+  Grid, Link, Container, Typography, TextField, Button,
+  ThemeProvider, Alert, AlertTitle, FormControlLabel, Checkbox,
 } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
-import Copyright from "@/components/Copyright";
 import axios from 'axios';
 import { useRouter } from 'next/router';
 
 const theme = createTheme();
+const api = axios.create({
+  baseURL: 'http://127.0.0.1:3333', // Set this to your backend URL
+});
 
 const SignUp: React.FC = () => {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    firstname: '',
+    lastname: '',
     email: '',
     password: '',
   });
+
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -35,9 +32,11 @@ const SignUp: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setIsLoading(true);
 
     try {
-      const response = await axios.post('/api/register', formData);
+      // Send a POST request to the backend for registration with CSRF token in headers
+      const response = await axios.post('http://127.0.0.1:3333/api/register', formData);
       const data = response.data;
 
       console.log('Registration successful:', data);
@@ -50,22 +49,24 @@ const SignUp: React.FC = () => {
       }, 2000);
     } catch (error) {
       console.error('Registration failed:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs"  sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Container component="main" maxWidth="xs" sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <Typography variant="h4">Sign Up</Typography>
         <form onSubmit={handleSubmit} style={{ width: '100%', marginTop: 1 }}>
-        <TextField
+          <TextField
             variant="outlined"
             margin="normal"
             fullWidth
-            id="firstName"
+            id="firstname"
             label="First Name"
-            name="firstName"
-            value={formData.firstName}
+            name="firstname"
+            value={formData.firstname}
             onChange={handleInputChange}
             required
           />
@@ -73,10 +74,10 @@ const SignUp: React.FC = () => {
             variant="outlined"
             margin="normal"
             fullWidth
-            id="lastName"
+            id="lastname"
             label="Last Name"
-            name="lastName"
-            value={formData.lastName}
+            name="lastname"
+            value={formData.lastname}
             onChange={handleInputChange}
             required
           />
@@ -102,14 +103,20 @@ const SignUp: React.FC = () => {
             value={formData.password}
             onChange={handleInputChange}
             required
-          /><Button
+          />
+          <FormControlLabel
+            control={<Checkbox value="allowExtraEmails" color="primary" />}
+            label="I accept all the Terms and conditions."
+          />
+          <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             sx={{ mt: 3, mb: 2 }}
+            disabled={isLoading} // Disable the button while loading
           >
-            Sign Up
+            {isLoading ? 'Signing Up...' : 'Sign Up'}
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
@@ -119,13 +126,12 @@ const SignUp: React.FC = () => {
             </Grid>
           </Grid>
         </form>
-        {showSuccess && ( // Conditionally render the success alert
+        {showSuccess && (
           <Alert severity="success" sx={{ width: '100%', marginTop: 2 }}>
             <AlertTitle>Success</AlertTitle>
             Account successfully created! Redirecting to FileShare...
           </Alert>
         )}
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );
